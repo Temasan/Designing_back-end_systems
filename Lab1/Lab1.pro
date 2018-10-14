@@ -13,8 +13,18 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        widget.cpp
+        widget.cpp \
+    philosopher.cpp \
+    stick.cpp \
+    dinner.cpp
 
-HEADERS  += widget.h
+HEADERS  += widget.h \
+    philosopher.h \
+    stick.h \
+    dinner.h \
+    enums.h
 
 FORMS    += widget.ui
+
+RESOURCES += \
+    qml.qrc
