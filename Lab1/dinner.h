@@ -6,6 +6,7 @@
 #include <stick.h>
 #include <thread>
 #include <QObject>
+#include <atomic>
 
 typedef std::vector<std::thread*> vectorThreads;
 //typedef std::vector<QString> vectorNames;
@@ -31,9 +32,9 @@ private:
     uint32_t m_numberPhylosophers = 0;
     vectorThreads m_vectorThreads;
     //vectorNames m_names;
-    vectorStics m_vectorStics;
+    std::vector<Stick> m_vectorStics;
     vectorPhilosophers m_vectorPhilosophers;
-    std::shared_ptr<std::mutex> m_ptrMutex;
+    ptrMutex m_ptrMutex;
     QTimer *m_timer;
 private slots:
     void onEating(int nowtime, int number, EatingState eatingState);

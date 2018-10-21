@@ -2,6 +2,10 @@
 #include <functional>
 #include <QDebug>
 
+//std::mutex staticMutexNamesspace::staticPauseMutex;
+std::vector<Stick*> staticMutexNamesspace::stiks;
+
+
 Dinner::Dinner(QObject*parent)
     :QObject(parent)
 {
@@ -21,11 +25,12 @@ void Dinner::start(bool status){
         for(int i = 0; i< m_numberPhylosophers; i++){
             while(!m_vectorPhilosophers[i]->getStarted()){};
         }
-        /*for(int i = 0; i< m_numberPhylosophers; i++){
-            m_vectorPhilosophers[i]->getPauseMutex()->unlock();
-        }*/
-
-        m_ptrMutex->unlock();
+        std::this_thread::sleep_for (std::chrono::seconds(1));
+        for(int i = 0; i< m_numberPhylosophers; i++){
+            m_vectorPhilosophers[i]->unlock();
+        }
+        //staticMutexNamesspace::staticPauseMutex.unlock();
+        //m_ptrMutex->unlock();
  //   m_timer->start();
     }
 }
@@ -35,27 +40,35 @@ void Dinner::onEating(int nowtime, int number, EatingState eatingState){
 }
 
 void Dinner::init(){
+    //staticMutexNamesspace::staticPauseMutex.lock();
     //m_timer = new QTimer(this);
     //QObject::connect(m_timer, SIGNAL(timeout()), this, SLOT(onTriggered()));
     //m_timer->setInterval(500);
 
 
-    m_ptrMutex = std::make_shared<std::mutex>();
-    m_ptrMutex->lock();
+   // m_ptrMutex = std::make_shared<std::mutex>();
+   // m_ptrMutex->lock();
+    //staticMutexNamesspace::stiks.resize(m_numberPhylosophers);
     for(uint32_t i = 0; i < m_numberPhylosophers; i++){
-        m_vectorStics.push_back(std::make_shared<Stick>(i));
+        staticMutexNamesspace::stiks.push_back(new Stick(i));
     }
+
     //srand(unsigned(time(NULL)));
     for(uint32_t i = 0; i < m_numberPhylosophers; i++){
-        int two_stick = (i+1 != m_vectorStics.size() ? (i+1):0);
+        int two_stick = (i+1 != staticMutexNamesspace::stiks.size() ? (i+1):0);
         //int m = random()%10; //!\note 10 - максимальное время еды const
-        m_vectorPhilosophers.push_back(new Philosopher(m_vectorStics[i],m_vectorStics[two_stick],
-                                       std::move(m_ptrMutex), this));
+        m_vectorPhilosophers.push_back(new Philosopher(std::pair<int,int>(i,two_stick)/*m_vectorStics[i],m_vectorStics[two_stick],
+                                       m_ptrMutex,*/));
         //m_vectorPhilosophers[i]->setName(m_names[i]);
         m_vectorPhilosophers[i]->setNumber(i);
-        connect(m_vectorPhilosophers[i], SIGNAL(eating(int, int, EatingState)), this, SLOT(onEating(int,int,EatingState)));
+        m_vectorPhilosophers[i]->lock();
+
+        connect(m_vectorPhilosophers[i], SIGNAL(eating(int, int, EatingState)), this, SLOT(onEating(int,int,EatingState)),Qt::QueuedConnection);
         //m_vectorPhilosophers[i]->setEatingTime(m);
-        m_vectorThreads.push_back(new std::thread(std::bind(&Philosopher::startEating, m_vectorPhilosophers[i])));
+        /*m_vectorThreads.push_back(
+                    new std::thread(std::bind(
+                            &Philosopher::startEating,m_vectorPhilosophers[i])));*/
+        m_vectorPhilosophers[i]->start();
         //m_vectorThreads[i]->join();
     }
 }

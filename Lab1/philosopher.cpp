@@ -3,11 +3,13 @@
 #include <chrono>
 #include <thread>
 
-Philosopher::Philosopher(ptrStick stickOne, ptrStick stickTwo, std::shared_ptr<std::mutex> ptrMutex, QObject *parent):
-    QObject(parent),
-    m_pairSticks(stickOne,stickTwo),
-    m_pauseMutex(ptrMutex)
+Philosopher::Philosopher(std::pair<int, int> pairSticsNumber, QThread *parent):
+    QThread(parent)
 {
+    m_firstNumberStik.store(pairSticsNumber.first);
+    m_secondNumberStik.store(pairSticsNumber.second);
+
+    //m_pauseMutex.lock();
    // m_pairSticks.first = stickOne;
    // m_pairSticks.second = stickTwo;
     //m_pauseMutex = std::move(ptrMutex);
@@ -16,11 +18,16 @@ Philosopher::Philosopher(ptrStick stickOne, ptrStick stickTwo, std::shared_ptr<s
     //QObject::connect(m_timer, SIGNAL(timeout()), this, SLOT(tickEat()));
 }
 
-void Philosopher::startEating(){
+void Philosopher::run(/*std::pair<ptrStick, ptrStick> &pairSticks*/){
     qDebug() << "I am lock " << QString::number(m_number);
     m_started = true;
-    m_pauseMutex->lock();
+    //m_pauseMutex.lock();
+    m_pauseMutex.lock();
     qDebug() << "I am unlock " << QString::number(m_number);
+
+    qDebug() << "Пробую захватить " << QString::number(m_number) << " " << QString::number(staticMutexNamesspace::stiks[m_firstNumberStik.load()]->getNumberStick())
+             << " " << QString::number(staticMutexNamesspace::stiks[m_secondNumberStik.load()]->getNumberStick());
+
     while(!pushTwoStick()){};
     qDebug() << "I am start eating " << QString::number(m_number);
     m_eatingState = Eateing;
@@ -28,31 +35,35 @@ void Philosopher::startEating(){
     tickEat();
 }
 
-void Philosopher::tickEat(){
+void Philosopher::tickEat(/*std::pair<ptrStick, ptrStick> &pairSticks*/){
     while(m_nowTime!=m_eatingTime){
         std::this_thread::sleep_for (std::chrono::seconds(1));
         m_nowTime++;
-        if(m_nowTime==m_eatingTime){
+        if(m_nowTime == m_eatingTime){
     //        m_timer->stop();
             m_eatingState = FinishEateing;
-            m_pairSticks.first->unLock();
-            m_pairSticks.second->unLock();        }
+            qDebug() << "I am finish eating " << QString::number(m_number);
+            staticMutexNamesspace::stiks[m_firstNumberStik.load()]->unlock();
+            staticMutexNamesspace::stiks[m_secondNumberStik.load()]->unlock();
+
+            //pairSticks.first->unLock();
+            //pairSticks.second->unLock();
+        }
         eating(m_nowTime, m_number, m_eatingState);
     }
 }
 
-bool Philosopher::pushTwoStick(){
-    qDebug() << "Пробую захватить " << QString::number(m_number);
-    if(m_pairSticks.first->tryLock() && m_pairSticks.second->tryLock()){
-        return true;
-    }
-    else if(!m_pairSticks.second->tryLock()){
-        m_pairSticks.second->lock(); // принудительный захват. Если палку взять нельзя, то залочить мьютекс
-        return false; // и вернуться в бесконечный цикл после отпускания
-    }
-    else if(!m_pairSticks.first->tryLock()){
-        m_pairSticks.first->lock();
-        return false;
+bool Philosopher::pushTwoStick(/*std::pair<ptrStick, ptrStick> &pairSticks*/){
+    /*
+    qDebug() << "Пробую захватить " << QString::number(m_number) << " " << QString::number(m_firstNumberStik.load())
+             << " " << QString::number(m_secondNumberStik.load());*/
+    if(staticMutexNamesspace::stiks[m_firstNumberStik.load()]->tryLock()){
+        if(staticMutexNamesspace::stiks[m_secondNumberStik.load()]->tryLock()){
+            return true;
+        }
+        else{
+            staticMutexNamesspace::stiks[m_firstNumberStik.load()]->unlock();
+        }
     }
     return false;
 }

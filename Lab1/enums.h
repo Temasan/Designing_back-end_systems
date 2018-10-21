@@ -1,5 +1,9 @@
 #ifndef ENUMS_H
 #define ENUMS_H
+#include <thread>
+#include <mutex>
+#include <atomic>
+
 
 /*!
  * \brief The EatingState enum Статус философа:
@@ -13,4 +17,9 @@ enum EatingState{
     Eateing,
     FinishEateing
 };
+
+typedef std::shared_ptr<std::atomic<std::mutex>> ptrAtomicMutex;
+typedef std::shared_ptr<std::mutex> ptrMutex;
+
+
 #endif // ENUMS_H
