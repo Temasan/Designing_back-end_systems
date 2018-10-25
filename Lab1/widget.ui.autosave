@@ -29,11 +29,7 @@
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <widget class="QTextEdit" name="textEdit">
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-       </widget>
+       <widget class="QTextEdit" name="textEdit"/>
       </item>
       <item>
        <layout class="QVBoxLayout" name="verticalLayout_3">

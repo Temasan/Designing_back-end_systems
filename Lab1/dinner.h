@@ -6,13 +6,12 @@
 #include <stick.h>
 #include <thread>
 #include <QObject>
-#include <atomic>
 
-typedef std::vector<std::thread*> vectorThreads;
-//typedef std::vector<QString> vectorNames;
-typedef std::vector<std::shared_ptr<Stick>> vectorStics;
 typedef std::vector<Philosopher*> vectorPhilosophers;
 
+/*!
+ * \brief The Dinner class класс инициализации данных и запуска потоков философов.
+ */
 class Dinner : public QObject
 {
     Q_OBJECT
@@ -20,24 +19,37 @@ class Dinner : public QObject
 public:
     explicit Dinner(QObject * parent=0);
     ~Dinner();
-    uint32_t getNumberPhylosophers() const;
 
 public slots:
-    void start(bool status);
-    void setNumberPhylosophers(int numberPhylosophers);
+    void start(bool status); //!< старт работы
+    void setNumberPhylosophers(int numberPhylosophers); //!< задать номер философа
 signals:
-    void getPropertiesToWidget(QString name_phylosopher, int nowNumber, EatingState state);
+    /*!
+     * \brief getPropertiesToWidget сигнал такта времени питания философа
+     * \param name_phylosopher имя философа (его номер)
+     * \param nowNumber текущий такт времени
+     * \param state статус
+     * \param sticks номера палок, которыми он кушает
+     */
+    void getPropertiesToWidget(QString name_phylosopher, int nowNumber, EatingState state, std::pair<int, int> sticks);
+    void putStick(int stick, bool status, int numberPhyl); //!< факт взятия или отпускания палки
 private:
-    void init();
-    uint32_t m_numberPhylosophers = 0;
-    vectorThreads m_vectorThreads;
-    //vectorNames m_names;
-    std::vector<Stick> m_vectorStics;
-    vectorPhilosophers m_vectorPhilosophers;
-    ptrMutex m_ptrMutex;
-    QTimer *m_timer;
+    void init();                            //!< инициализация данных
+    uint32_t m_numberPhylosophers = 0;      //!< номер философов
+    vectorPhilosophers m_vectorPhilosophers;//!< вектор философов
 private slots:
-    void onEating(int nowtime, int number, EatingState eatingState);
+    /*!
+     * \brief onEating философ сообщил, что так времени его питания пройден
+     * \param nowtime текущий такт времени
+     * \param number номер философа
+     * \param eatingState статус
+     * \param sticks пара палок, которыми он питается
+     */
+    void onEating(int nowtime, int number, EatingState eatingState, std::pair<int,int> sticks);
+    /*!
+     * \brief onPutStick факт взятия или отпускания палки философом
+     */
+    void onPutStick(int stick, bool status, int numberPhyl);
 };
 
 #endif // DINNER_H

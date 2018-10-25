@@ -4,6 +4,7 @@
 #include <QSpinBox>
 #include <QPushButton>
 #include <enums.h>
+#include <mutex>
 
 namespace Ui {
 class Widget;
@@ -20,12 +21,14 @@ public:
     QPushButton *stopButton() const;
     QSpinBox *spinBox() const;
 public slots:
-    void onDataChange(QString name_phylosopher, int nowNumber, EatingState state);
+    void onDataChange(QString name_phylosopher, int nowNumber, EatingState state,std::pair<int, int> numbers);
+    void onPutStick(int stick, bool status, int numberPhyl);
 private:
     Ui::Widget *ui;
     QPushButton *m_startButton;
     QPushButton *m_stopButton;
     QSpinBox *m_spinBox;
+    std::mutex m_localMutex;
 };
 
 #endif // WIDGET_H

@@ -8,48 +8,43 @@
 #include <enums.h>
 #include <atomic>
 #include <QThread>
+#include <mutex>
 
-typedef std::shared_ptr<Stick> ptrStick;
+/*!
+ * \brief The staticMutexNamesspace struct Структура со статическим вектором палок. Причина использование - проблема с многопоточностью
+ * при обращении к данным
+ */
 struct staticMutexNamesspace {
-    staticMutexNamesspace(){
-    }
+    staticMutexNamesspace(){}
     static std::vector<Stick*> stiks;
 };
+/*!
+ * \brief The Philosopher class наследован от потока. Работает параллельно. Обращяется к статическому вектору просранства имен staticMutexNamesspace
+ */
 class Philosopher : public QThread
 {
     Q_OBJECT
 public:
     explicit Philosopher(std::pair<int,int> pairSticsNumber, QThread *parent=nullptr);
-    void run(/*std::pair<ptrStick, ptrStick> &pairSticks*/) override;
-
-    EatingState getEatingState(){return m_eatingState;} const
+    void run() override;
     void setEatingTime(uint32_t eatingTime){m_eatingTime = eatingTime;}
-    uint32_t getNowTime() const {return m_nowTime;}
-    QString getName() const {return m_name;}
-    void lock(){m_pauseMutex.lock();}
-    void unlock(){m_pauseMutex.unlock();}
-    void setName(const QString &name){m_name = name;}
-    int getNumber() const;
-    void setNumber(int number);
-    bool getStarted() const;
+    void lock(){m_pauseMutex.lock();}//!< Блокировка локального мьютекса паузы
+    void unlock(){m_pauseMutex.unlock();} //!< Разблокировка локального мьютекса паузы
+    void setNumber(int number); //!< Задаем номер философа
 signals:
-    void eating(int nowtime, int number, EatingState eatingState); //!< Философ есть определенный тик времени
+    void eating(int nowtime, int number, EatingState eatingState, std::pair<int,int> sticks); //!< Сигнал логирование, что философ есть один такт времени
+    void putStikcs(int stick, bool status, int numberPhyl); //!< Сигнал логирования о захвате или отпускания палки
 private:
     bool pushTwoStick(); //!< Функция возвращает true, если философу удалось захватить две палки
-   // std::pair<ptrStick, ptrStick> m_pairSticks; //!< Левая и правая палочка, необходимые философу для питания
     EatingState m_eatingState = NotEateing; //!< Текущий статус философа
-    //std::mutex m_pauseMutex; //!< Мьютекс паузы (кушать ещё не начинал либо ждет тика таймера)
-    uint32_t m_eatingTime = 5; //!< Время, необходимое для питания философу
+    uint32_t m_eatingTime = 3; //!< Время, необходимое для питания философу
     uint32_t m_nowTime = 0; //!< Текущее время, которое показывает сколько кушает философ
-    QString m_name = ""; //!< Имя философа
-    std::atomic<int> m_firstNumberStik;
-    std::atomic<int> m_secondNumberStik;
-    std::mutex m_pauseMutex;
-    int m_number = -1;
-    bool m_started = false;
-    //QTimer *m_timer;
+    std::atomic<int> m_firstNumberStik; //!< Номер первой палочки
+    std::atomic<int> m_secondNumberStik;//!< Номер второй палочки
+    std::mutex m_pauseMutex; //!< Мьютекс паузы
+    int m_number = -1; //!< Номер философа
 private slots:
-    void tickEat();
+    void tickEat();//!< Тик поедания философом
 };
 
 #endif // PHILOSOPHER_H
