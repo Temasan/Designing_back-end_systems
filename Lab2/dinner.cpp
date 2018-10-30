@@ -2,7 +2,6 @@
 #include <functional>
 #include <QDebug>
 
-std::vector<Stick*> staticMutexNamesspace::stiks;
 
 Dinner::Dinner(QObject*parent)
     :QObject(parent)
@@ -34,12 +33,12 @@ void Dinner::onPutStick(int stick, bool status,int numberPhyl){
 }
 
 void Dinner::init(){
-    for(uint32_t i = 0; i < m_numberPhylosophers; i++){
+    /*for(uint32_t i = 0; i < m_numberPhylosophers; i++){
         staticMutexNamesspace::stiks.push_back(new Stick(i));
-    }
+    }*/
 
     for(uint32_t i = 0; i < m_numberPhylosophers; i++){
-        int two_stick = (i+1 != staticMutexNamesspace::stiks.size() ? (i+1):0);
+        int two_stick = (i+1 != m_numberPhylosophers ? (i+1):0);
         m_vectorPhilosophers.push_back(new Philosopher(std::pair<int,int>(i,two_stick)));
         m_vectorPhilosophers[i]->setNumber(i);
         m_vectorPhilosophers[i]->lock();

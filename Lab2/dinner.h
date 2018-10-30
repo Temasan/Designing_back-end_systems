@@ -3,7 +3,6 @@
 #include <QMap>
 #include <QVariant>
 #include <philosopher.h>
-#include <stick.h>
 #include <thread>
 #include <QObject>
 

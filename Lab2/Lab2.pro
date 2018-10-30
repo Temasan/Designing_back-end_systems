@@ -15,12 +15,12 @@ TEMPLATE = app
 SOURCES += main.cpp\
     dinner.cpp \
     philosopher.cpp \
-    stick.cpp \
+#    stick.cpp \
     widget.cpp
 
 HEADERS  += dinner.h \
     enums.h \
-    stick.h \
+#    stick.h \
     philosopher.h \
     widget.h
 
