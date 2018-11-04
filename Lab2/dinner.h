@@ -7,6 +7,7 @@
 #include <QObject>
 
 typedef std::vector<Philosopher*> vectorPhilosophers;
+ // каждый философ соединяется с соседними
 
 /*!
  * \brief The Dinner class класс инициализации данных и запуска потоков философов.

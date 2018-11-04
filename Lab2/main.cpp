@@ -32,6 +32,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     qRegisterMetaType<EatingState>("EatingState");
+    qRegisterMetaType<Philosopher::PushingStickEnum>("PushingStickEnum");
     qRegisterMetaType<std::pair<int,int>>("std::pair<int,int>");
     Dinner d;
     Widget w;

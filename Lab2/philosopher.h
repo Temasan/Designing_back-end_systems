@@ -23,20 +23,26 @@ public:
     void lock(){m_pauseMutex.lock();}//!< Блокировка локального мьютекса паузы
     void unlock(){m_pauseMutex.unlock();} //!< Разблокировка локального мьютекса паузы
     void setNumber(int number); //!< Задаем номер философа
+    enum PushingStickEnum{
+        tryPushingLeft = 0,
+        tryPushingRight,
+        unPushingLeft,
+        unPushingRight,
+    };
 public slots:
-    bool onMessageFromNeighbourSend(QString message); //!< Актор получил сообщение от другого актора
+    bool onMessageFromNeighbourSend(PushingStickEnum message); //!< Актор получил сообщение от другого актора
 signals:
     void eating(int nowtime, int number, EatingState eatingState, std::pair<int,int> sticks); //!< Сигнал логирование, что философ есть один такт времени
     void putStikcs(int stick, bool status, int numberPhyl); //!< Сигнал логирования о захвате или отпускания палки
-    bool messageToOneNeighbourSend(QString message); //!< Актор отправляет сообщение первому соседнему актору
-    bool messageToTwoNeighbourSend(QString message); //!< Актор отправляет сообщение второму соседнему актору
+    bool messageToOneNeighbourSend(PushingStickEnum message); //!< Актор отправляет сообщение первому соседнему актору
+    bool messageToTwoNeighbourSend(PushingStickEnum message); //!< Актор отправляет сообщение второму соседнему актору
 private:
     bool pushTwoStick(); //!< Функция возвращает true, если философу удалось захватить две палки
     EatingState m_eatingState = NotEateing; //!< Текущий статус философа
     uint32_t m_eatingTime = 3; //!< Время, необходимое для питания философу
     uint32_t m_nowTime = 0; //!< Текущее время, которое показывает сколько кушает философ
-    std::atomic<bool> m_firstStateStik; //!< Состояние первой палочки
-    std::atomic<bool> m_secondStateStik;//!< Состояние второй палочки
+    std::atomic<bool> m_firstStateStik; //!< Состояние первой (левой) палочки. Если true, то палка свободна
+    std::atomic<bool> m_secondStateStik;//!< Состояние второй (правой) палочки. Если true, то палка свободна
     std::atomic<int> m_firstNumberStik; //!< Номер первой палочки
     std::atomic<int> m_secondNumberStik;//!< Номер второй палочки
     std::mutex m_pauseMutex; //!< Мьютекс паузы

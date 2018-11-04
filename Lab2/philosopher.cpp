@@ -24,34 +24,60 @@ void Philosopher::tickEat(){
         if(m_nowTime == m_eatingTime){
             m_eatingState = FinishEateing;
             //qDebug() << "I am finish eating " << QString::number(m_number);
-            //staticMutexNamesspace::stiks[m_firstNumberStik.load()]->unlock();
+            messageToOneNeighbourSend(unPushingLeft);
+            m_firstStateStik.store(true);
             putStikcs(m_firstNumberStik.load(), false, m_number);
-            //staticMutexNamesspace::stiks[m_secondNumberStik.load()]->unlock();
+            messageToOneNeighbourSend(unPushingRight);
+            m_secondNumberStik.store(true);
             putStikcs(m_secondNumberStik.load(), false, m_number);
         }
         eating(m_nowTime, m_number, m_eatingState, std::pair<int,int>(m_firstNumberStik.load(),m_secondNumberStik.load()));
     }
 }
 
-bool Philosopher::onMessageFromNeighbourSend(QString message){
+bool Philosopher::onMessageFromNeighbourSend(PushingStickEnum message){
+    switch(message){
+    case tryPushingLeft: // сосед просит взять левую палку, для текущего философа это правая
+        if(m_secondNumberStik.load()){
+            m_secondNumberStik.store(false);
+            return true;
+        }
+        return false;
+     case tryPushingRight: // сосед просит взять правую палку, для текущего философа это левая
+        if(m_firstNumberStik.load()){
+            m_firstNumberStik.store(false);
+            return true;
+        }
+        return false;
+     case unPushingLeft: // сосед говорит, что больше не использует палку
+         m_secondNumberStik.store(true);
+         return true;
+     case unPushingRight: // сосед говорит, что больше не использует палку
+        m_firstNumberStik.store(true);
+        return true;
+    }
     return false;
 }
 
 
 bool Philosopher::pushTwoStick(){
-//    srand(unsigned(time(NULL)));
-//    int randNumber = rand()%400 + 750;
-//    if(staticMutexNamesspace::stiks[m_firstNumberStik.load()]->tryLock(randNumber)){
-//        putStikcs(m_firstNumberStik.load(), true, m_number);
-//        if(staticMutexNamesspace::stiks[m_secondNumberStik.load()]->tryLock(randNumber)){
-//            putStikcs(m_secondNumberStik.load(), true, m_number);
-//            return true;
-//        }
-//        else{
-//            putStikcs(m_firstNumberStik.load(), false, m_number);
-//            staticMutexNamesspace::stiks[m_firstNumberStik.load()]->unlock();
-//        }
-//    }
+    srand(unsigned(time(NULL)));
+    int randNumber = rand()%400 + 750;
+    if(messageToOneNeighbourSend(tryPushingLeft)){ // попытка захватить левую палку, которая для соседа является правой
+        m_firstStateStik.store(false);
+        putStikcs(m_firstNumberStik.load(), true, m_number);
+        if(messageToOneNeighbourSend(tryPushingRight)){ // попытка захватить правую палку, которая для соседа является левой
+            m_secondNumberStik.store(false);
+            putStikcs(m_secondNumberStik.load(), true, m_number);
+            return true;
+        }
+        else{
+            m_firstStateStik.store(true);
+            messageToOneNeighbourSend(unPushingLeft);
+            putStikcs(m_firstNumberStik.load(), false, m_number);
+        }
+    }
+    std::this_thread::sleep_for (std::chrono::seconds(randNumber));
     return false;
 }
 
