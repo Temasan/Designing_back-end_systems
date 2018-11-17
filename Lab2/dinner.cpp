@@ -36,19 +36,21 @@ void Dinner::init(){
     for(uint32_t i = 0; i < m_numberPhylosophers; i++){
         int two_stick = (i+1 != m_numberPhylosophers ? (i+1):0);
         m_vectorPhilosophers.push_back(new Philosopher(std::pair<int,int>(i,two_stick)));
+    }
+    for(uint32_t i = 0; i < m_numberPhylosophers; i++){
+        int two_stick = (i+1 != m_numberPhylosophers ? (i+1):0);
         m_vectorPhilosophers[i]->setNumber(i);
         m_vectorPhilosophers[i]->lock();
         int oneNumberNeighboard = (i == 0 ? m_vectorPhilosophers.size()-1:i-1);
-        int twoNumberNeighboard = two_stick;
 
         connect(m_vectorPhilosophers[i], SIGNAL(eating(int, int, EatingState,std::pair<int,int>)), this, SLOT(onEating(int,int,EatingState,std::pair<int,int>)),Qt::QueuedConnection);
         connect(m_vectorPhilosophers[i], SIGNAL(putStikcs(int, bool,int)), this, SLOT(onPutStick(int, bool,int)),Qt::QueuedConnection);
 
         // соединяем методы соседних философов для передачи сообщений
         connect(m_vectorPhilosophers[i], SIGNAL(messageToOneNeighbourSend(Philosopher::PushingStickEnum)),
-                m_vectorPhilosophers[oneNumberNeighboard], SLOT(onMessageFromNeighbourSend(Philosopher::PushingStickEnum)),Qt::QueuedConnection);
+                m_vectorPhilosophers[oneNumberNeighboard], SLOT(onMessageFromNeighbourSend(Philosopher::PushingStickEnum)),Qt::BlockingQueuedConnection);
         connect(m_vectorPhilosophers[i], SIGNAL(messageToTwoNeighbourSend(Philosopher::PushingStickEnum)),
-                m_vectorPhilosophers[twoNumberNeighboard], SLOT(onMessageFromNeighbourSend(Philosopher::PushingStickEnum)),Qt::QueuedConnection);
+                m_vectorPhilosophers[two_stick], SLOT(onMessageFromNeighbourSend(Philosopher::PushingStickEnum)),Qt::BlockingQueuedConnection);
 
         m_vectorPhilosophers[i]->start();
     }

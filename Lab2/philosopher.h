@@ -10,6 +10,7 @@
 #include <QThread>
 #include <mutex>
 
+static std::mutex globalMutex;
 /*!
  * \brief The Philosopher class наследован от потока. Работает параллельно. Обращяется к статическому вектору просранства имен staticMutexNamesspace
  */
@@ -25,17 +26,17 @@ public:
     void setNumber(int number); //!< Задаем номер философа
     enum PushingStickEnum{
         tryPushingLeft = 0,
-        tryPushingRight,
-        unPushingLeft,
-        unPushingRight,
+        tryPushingRight = 1,
+        unPushingLeft = 2,
+        unPushingRight = 3
     };
 public slots:
-    bool onMessageFromNeighbourSend(PushingStickEnum message); //!< Актор получил сообщение от другого актора
+    bool onMessageFromNeighbourSend(Philosopher::PushingStickEnum message); //!< Актор получил сообщение от другого актора
 signals:
     void eating(int nowtime, int number, EatingState eatingState, std::pair<int,int> sticks); //!< Сигнал логирование, что философ есть один такт времени
     void putStikcs(int stick, bool status, int numberPhyl); //!< Сигнал логирования о захвате или отпускания палки
-    bool messageToOneNeighbourSend(PushingStickEnum message); //!< Актор отправляет сообщение первому соседнему актору
-    bool messageToTwoNeighbourSend(PushingStickEnum message); //!< Актор отправляет сообщение второму соседнему актору
+    bool messageToOneNeighbourSend(Philosopher::PushingStickEnum); //!< Актор отправляет сообщение первому соседнему актору
+    bool messageToTwoNeighbourSend(Philosopher::PushingStickEnum); //!< Актор отправляет сообщение второму соседнему актору
 private:
     bool pushTwoStick(); //!< Функция возвращает true, если философу удалось захватить две палки
     EatingState m_eatingState = NotEateing; //!< Текущий статус философа
