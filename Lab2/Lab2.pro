@@ -10,7 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = Lab2
 TEMPLATE = app
-CONFIG += debug
+#CONFIG += debug
 
 
 SOURCES += main.cpp\

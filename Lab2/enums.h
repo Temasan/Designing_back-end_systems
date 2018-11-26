@@ -7,11 +7,19 @@
  *  - кушает;
  *  - закончил кушать.
  */
-
 enum EatingState{
     NotEateing = 0,
     Eateing,
     FinishEateing
+};
+/*!
+ * \brief The PushingStickEnum enum
+ */
+enum PushingStickEnum{
+    tryPushingLeft = 0,
+    tryPushingRight = 1,
+    unPushingLeft = 2,
+    unPushingRight = 3
 };
 
 #endif // ENUMS_H

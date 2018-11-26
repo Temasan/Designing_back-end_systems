@@ -1,0 +1,78 @@
+\hypertarget{classDinner}{}\section{Dinner Class Reference}
+\label{classDinner}\index{Dinner@{Dinner}}
+
+
+The \hyperlink{classDinner}{Dinner} class класс инициализации данных и запуска потоков философов.  
+
+
+
+
+{\ttfamily \#include $<$dinner.\+h$>$}
+
+
+
+Inheritance diagram for Dinner\+:
+% FIG 0
+
+
+Collaboration diagram for Dinner\+:
+% FIG 1
+\subsection*{Public Slots}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classDinner_a3a955076d678281b75b6125dd913fb8b}\label{classDinner_a3a955076d678281b75b6125dd913fb8b}} 
+void \hyperlink{classDinner_a3a955076d678281b75b6125dd913fb8b}{start} (bool status)
+\begin{DoxyCompactList}\small\item\em старт работы \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classDinner_a11354abdac3c1b1b5deba294213ecc29}\label{classDinner_a11354abdac3c1b1b5deba294213ecc29}} 
+void \hyperlink{classDinner_a11354abdac3c1b1b5deba294213ecc29}{set\+Number\+Phylosophers} (int number\+Phylosophers)
+\begin{DoxyCompactList}\small\item\em задать номер философа \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classDinner_ad9cbf504aaa8a23371d56dbe32a72fc5}\label{classDinner_ad9cbf504aaa8a23371d56dbe32a72fc5}} 
+bool {\bfseries on\+Message\+Fromphylosopher} (Pushing\+Stick\+Enum message, int number\+Phylosopher)
+\end{DoxyCompactItemize}
+\subsection*{Signals}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{classDinner_a934834665e990a945e85ac3b05794037}{get\+Properties\+To\+Widget} (Q\+String name\+\_\+phylosopher, int now\+Number, Eating\+State state, std\+::pair$<$ int, int $>$ sticks)
+\begin{DoxyCompactList}\small\item\em get\+Properties\+To\+Widget сигнал такта времени питания философа \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classDinner_a498ee454a22d827d06cfeef3db0640a6}\label{classDinner_a498ee454a22d827d06cfeef3db0640a6}} 
+void \hyperlink{classDinner_a498ee454a22d827d06cfeef3db0640a6}{put\+Stick} (int stick, bool status, int number\+Phyl)
+\begin{DoxyCompactList}\small\item\em факт взятия или отпускания палки \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classDinner_a0f0982bde03540772d67b3c4b819dbfc}\label{classDinner_a0f0982bde03540772d67b3c4b819dbfc}} 
+{\bfseries Dinner} (Q\+Object $\ast$parent=0)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The \hyperlink{classDinner}{Dinner} class класс инициализации данных и запуска потоков философов. 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classDinner_a934834665e990a945e85ac3b05794037}\label{classDinner_a934834665e990a945e85ac3b05794037}} 
+\index{Dinner@{Dinner}!get\+Properties\+To\+Widget@{get\+Properties\+To\+Widget}}
+\index{get\+Properties\+To\+Widget@{get\+Properties\+To\+Widget}!Dinner@{Dinner}}
+\subsubsection{\texorpdfstring{get\+Properties\+To\+Widget}{getPropertiesToWidget}}
+{\footnotesize\ttfamily void Dinner\+::get\+Properties\+To\+Widget (\begin{DoxyParamCaption}\item[{Q\+String}]{name\+\_\+phylosopher,  }\item[{int}]{now\+Number,  }\item[{Eating\+State}]{state,  }\item[{std\+::pair$<$ int, int $>$}]{sticks }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [signal]}}
+
+
+
+get\+Properties\+To\+Widget сигнал такта времени питания философа 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name\+\_\+phylosopher} & имя философа (его номер) \\
+\hline
+{\em now\+Number} & текущий такт времени \\
+\hline
+{\em state} & статус \\
+\hline
+{\em sticks} & номера палок, которыми он кушает \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+dinner.\+h\item 
+dinner.\+cpp\end{DoxyCompactItemize}

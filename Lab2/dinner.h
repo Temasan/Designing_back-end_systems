@@ -9,6 +9,9 @@
 typedef std::vector<Philosopher*> vectorPhilosophers;
  // каждый философ соединяется с соседними
 
+
+static std::vector<bool> stateSticks; //!< состояние палок
+
 /*!
  * \brief The Dinner class класс инициализации данных и запуска потоков философов.
  */
@@ -23,6 +26,7 @@ public:
 public slots:
     void start(bool status); //!< старт работы
     void setNumberPhylosophers(int numberPhylosophers); //!< задать номер философа
+    bool onMessageFromphylosopher(PushingStickEnum message, int numberPhylosopher);
 signals:
     /*!
      * \brief getPropertiesToWidget сигнал такта времени питания философа

@@ -1,21 +1,13 @@
 #include "widget.h"
 #include <QApplication>
 #include <dinner.h>
-#include <QFile>
 #include <enums.h>
-
-/*!
- * \todo Организация потоков, используя подхода акторов
- * Идея: каждый философ - актор, который кидает другим философам сообщения по типу: я возьму твою палочку, и если у того она свободна
- * то он её отдает. Когда он её отдаст, то у его палочки повяляется статус "взята". Также философы могут говорить соседям, что они
- * освободили их палочки. Следовательно, нужда в классах палочках полностью отпадает, ибо по дефолту все палочки философов отпущены.
- */
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     qRegisterMetaType<EatingState>("EatingState");
-    qRegisterMetaType<Philosopher::PushingStickEnum>("Philosopher::PushingStickEnum");
+    qRegisterMetaType<PushingStickEnum>("PushingStickEnum");
     qRegisterMetaType<std::pair<int,int>>("std::pair<int,int>");
     Dinner d;
     Widget w;

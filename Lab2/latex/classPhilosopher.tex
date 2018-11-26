@@ -1,0 +1,58 @@
+\hypertarget{classPhilosopher}{}\section{Philosopher Class Reference}
+\label{classPhilosopher}\index{Philosopher@{Philosopher}}
+
+
+The \hyperlink{classPhilosopher}{Philosopher} class наследован от потока. Работает параллельно. Обращяется к статическому вектору просранства имен static\+Mutex\+Namesspace.  
+
+
+
+
+{\ttfamily \#include $<$philosopher.\+h$>$}
+
+
+
+Inheritance diagram for Philosopher\+:
+% FIG 0
+
+
+Collaboration diagram for Philosopher\+:
+% FIG 1
+\subsection*{Signals}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classPhilosopher_a4e6247cdd138aba7b9af45c2ee632296}\label{classPhilosopher_a4e6247cdd138aba7b9af45c2ee632296}} 
+void \hyperlink{classPhilosopher_a4e6247cdd138aba7b9af45c2ee632296}{eating} (int nowtime, int number, Eating\+State eating\+State, std\+::pair$<$ int, int $>$ sticks)
+\begin{DoxyCompactList}\small\item\em Сигнал логирование, что философ есть один такт времени \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classPhilosopher_a8051031e0290fcff4525585937666cef}\label{classPhilosopher_a8051031e0290fcff4525585937666cef}} 
+void \hyperlink{classPhilosopher_a8051031e0290fcff4525585937666cef}{put\+Stikcs} (int stick, bool status, int number\+Phyl)
+\begin{DoxyCompactList}\small\item\em Сигнал логирования о захвате или отпускания палки \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classPhilosopher_a1293af3509f4e6275734b79cd7be3f60}\label{classPhilosopher_a1293af3509f4e6275734b79cd7be3f60}} 
+bool \hyperlink{classPhilosopher_a1293af3509f4e6275734b79cd7be3f60}{message\+To\+Dinner\+Send} (Pushing\+Stick\+Enum message, int number\+Phylosopher)
+\begin{DoxyCompactList}\small\item\em Актор отправляет сообщение первому соседнему актору \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classPhilosopher_a572f3abf04e32477ee7ce750f0f520db}\label{classPhilosopher_a572f3abf04e32477ee7ce750f0f520db}} 
+{\bfseries Philosopher} (std\+::pair$<$ int, int $>$ pair\+Stics\+Number, Q\+Thread $\ast$parent=nullptr)
+\item 
+\mbox{\Hypertarget{classPhilosopher_ae91a3b0f2b22a0b5524a4a5a8948dbad}\label{classPhilosopher_ae91a3b0f2b22a0b5524a4a5a8948dbad}} 
+void {\bfseries run} () override
+\item 
+\mbox{\Hypertarget{classPhilosopher_a438211c391df3d9e6e1dcf69ef2de6b0}\label{classPhilosopher_a438211c391df3d9e6e1dcf69ef2de6b0}} 
+void {\bfseries set\+Eating\+Time} (uint32\+\_\+t eating\+Time)
+\item 
+\mbox{\Hypertarget{classPhilosopher_a69ba537ec32602e1940d09dd1bc4acf2}\label{classPhilosopher_a69ba537ec32602e1940d09dd1bc4acf2}} 
+void \hyperlink{classPhilosopher_a69ba537ec32602e1940d09dd1bc4acf2}{unlock} ()
+\begin{DoxyCompactList}\small\item\em Разблокировка локального мьютекса паузы \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classPhilosopher_a5f41e156a9dbbc7190ad3092df82455c}\label{classPhilosopher_a5f41e156a9dbbc7190ad3092df82455c}} 
+void \hyperlink{classPhilosopher_a5f41e156a9dbbc7190ad3092df82455c}{set\+Number} (int number)
+\begin{DoxyCompactList}\small\item\em Задаем номер философа \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The \hyperlink{classPhilosopher}{Philosopher} class наследован от потока. Работает параллельно. Обращяется к статическому вектору просранства имен static\+Mutex\+Namesspace. 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+philosopher.\+h\item 
+philosopher.\+cpp\end{DoxyCompactItemize}
