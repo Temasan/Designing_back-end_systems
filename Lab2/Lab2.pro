@@ -15,15 +15,22 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
     dinner.cpp \
-    philosopher.cpp \
+    philosopher.cpp
 #    stick.cpp \
-    widget.cpp
+#    widget.cpp
 
 HEADERS  += dinner.h \
-    enums.h \
+#    enums.h \
 #    stick.h \
-    philosopher.h \
-    widget.h
+    philosopher.h
+#    widget.h
 
-FORMS    += widget.ui
+#FORMS    += widget.ui
 
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../FrontEnd/release/ -lFrontEnd
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../FrontEnd/debug/ -lFrontEnd
+else:unix:!macx: LIBS += -L$$OUT_PWD/../FrontEnd/ -lFrontEnd
+
+INCLUDEPATH += $$PWD/../FrontEnd
+DEPENDPATH += $$PWD/../FrontEnd

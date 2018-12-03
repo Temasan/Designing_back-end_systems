@@ -3,21 +3,6 @@
 #include <dinner.h>
 #include <QFile>
 #include <enums.h>
-/*vectorNames readNamesFromFile(){
-    vectorNames names;
-    QFile file(":/name_phylosophies.txt");
-    if(file.open(QFile::ReadOnly | QFile::Text)){
-        std::string bufStr = file.readLine().toStdString();
-        std::vector<std::string> results;
-
-        boost::split(results, bufStr, [](char c){return c == ', ';});
-        for(std::string i: results){
-            names.push_back(QString::fromUtf8(i.c_str()));
-        }
-    }
-    file.close();
-    return names;
-}*/
 
 int main(int argc, char *argv[])
 {

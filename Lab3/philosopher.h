@@ -10,6 +10,7 @@
 #include <mutex>
 #include <enums.h>
 
+//static std::mutex globalMutex;
 /*!
  * \brief The Philosopher class наследован от потока. Работает параллельно. Обращяется к статическому вектору просранства имен staticMutexNamesspace
  */
@@ -32,6 +33,8 @@ private:
     EatingState m_eatingState = NotEateing; //!< Текущий статус философа
     uint32_t m_eatingTime = 3; //!< Время, необходимое для питания философу
     uint32_t m_nowTime = 0; //!< Текущее время, которое показывает сколько кушает философ
+    //std::atomic<bool> m_firstStateStik; //!< Состояние первой (левой) палочки. Если true, то палка свободна
+    //std::atomic<bool> m_secondStateStik;//!< Состояние второй (правой) палочки. Если true, то палка свободна
     std::atomic<int> m_firstNumberStik; //!< Номер первой палочки
     std::atomic<int> m_secondNumberStik;//!< Номер второй палочки
     std::mutex m_pauseMutex; //!< Мьютекс паузы

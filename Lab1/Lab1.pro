@@ -13,18 +13,22 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        widget.cpp \
+#        widget.cpp \
     philosopher.cpp \
     stick.cpp \
     dinner.cpp
 
-HEADERS  += widget.h \
-    philosopher.h \
+HEADERS  += philosopher.h \
     stick.h \
-    dinner.h \
-    enums.h
+    dinner.h
 
-FORMS    += widget.ui
 
 RESOURCES += \
     qml.qrc
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../FrontEnd/release/ -lFrontEnd
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../FrontEnd/debug/ -lFrontEnd
+else:unix:!macx: LIBS += -L$$OUT_PWD/../FrontEnd/ -lFrontEnd
+
+INCLUDEPATH += $$PWD/../FrontEnd
+DEPENDPATH += $$PWD/../FrontEnd
