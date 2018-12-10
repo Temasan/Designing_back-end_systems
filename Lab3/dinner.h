@@ -5,12 +5,7 @@
 #include <philosopher.h>
 #include <thread>
 #include <QObject>
-
-typedef std::vector<Philosopher*> vectorPhilosophers;
- // каждый философ соединяется с соседними
-
-
-static std::vector<bool> stateSticks; //!< состояние палок
+#include <QTimer>
 
 /*!
  * \brief The Dinner class класс инициализации данных и запуска потоков философов.
@@ -26,7 +21,7 @@ public:
 public slots:
     void start(bool status); //!< старт работы
     void setNumberPhylosophers(int numberPhylosophers); //!< задать номер философа
-    bool onMessageFromphylosopher(PushingStickEnum message, int numberPhylosopher);
+    //bool onMessageFromphylosopher();
 signals:
     /*!
      * \brief getPropertiesToWidget сигнал такта времени питания философа
@@ -39,8 +34,10 @@ signals:
     void putStick(int stick, bool status, int numberPhyl); //!< факт взятия или отпускания палки
 private:
     void init();                            //!< инициализация данных
-    uint32_t m_numberPhylosophers = 0;      //!< номер философов
-    vectorPhilosophers m_vectorPhilosophers;//!< вектор философов
+    uint32_t m_numberPhylosophers = 0;      //!< число философов
+    std::mutex m_kingState_mutex;
+    std::atomic<int> m_numberKing;
+    QTimer m_tickTimer;
 private slots:
     /*!
      * \brief onEating философ сообщил, что так времени его питания пройден

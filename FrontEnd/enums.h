@@ -19,7 +19,9 @@ enum PushingStickEnum{
     tryPushingLeft = 0,
     tryPushingRight = 1,
     unPushingLeft = 2,
-    unPushingRight = 3
+    unPushingRight = 3,
+    tryPushing,
+    unPushing
 };
 
 #endif // ENUMS_H
