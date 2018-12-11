@@ -22,13 +22,13 @@ void Philosopher::run(){
         // когда палки захватить не получилось, то данные все сбрасываются, а взятые палки отпускаются
         srand(unsigned(time(NULL)));
         int randNumber = rand()%400 + 750;
-        //m_firstStateStik.store(false);
+        m_firstStateStik.store(true);
         //m_firstStikTimePushing.store(0);
-        putStikcs(m_firstNumberStik.load(), false, m_number);
+        //putStikcs(m_firstNumberStik.load(), false, m_number);
 
-        //m_secondStateStik.store(false);
+        m_secondStateStik.store(true);
         //m_secondStikTimePushing.store(0);
-        putStikcs(m_secondNumberStik.load(), false, m_number);
+        //putStikcs(m_secondNumberStik.load(), false, m_number);
 
         std::this_thread::sleep_for (std::chrono::milliseconds(randNumber));
     };
@@ -41,6 +41,7 @@ void Philosopher::tickEat(){
         std::this_thread::sleep_for (std::chrono::seconds(1));
         m_nowTime++;
         if(m_nowTime == m_eatingTime){
+            m_itEating.store(false);
             //qDebug() << QString::number(m_number) +" unpush";
             m_firstStikTimePushing.store(0);
             m_firstStateStik.store(true);
@@ -54,7 +55,7 @@ void Philosopher::tickEat(){
             putStikcs(m_secondNumberStik.load(), false, m_number);
             m_eatingState = FinishEateing;
         }
-        qDebug() << QString::number(m_number) +" eating";
+       // qDebug() << QString::number(m_number) +" eating";
         eating(m_nowTime, m_number, m_eatingState, std::pair<int,int>(m_firstNumberStik.load(),m_secondNumberStik.load()));
     }
 }
@@ -62,19 +63,29 @@ void Philosopher::tickEat(){
 bool Philosopher::pushTwoStick(){
     if(m_itEating.load())
         return m_itEating.load();
+    srand(unsigned(time(NULL)));
+    //qDebug() << QString::number(m_number) << " try locking stick";
     phylosophersGlobal::vectorOfMutex[m_number]->lock();
     if(m_firstStateStik.load()){
         m_firstStateStik.store(false);
-        m_firstStikTimePushing.store(QDateTime::currentDateTime().toMSecsSinceEpoch());
+        m_firstStikTimePushing.store(QDateTime::currentDateTime().toMSecsSinceEpoch()+rand()%5);
         putStikcs(m_firstNumberStik.load(), true, m_number);
         if(m_secondStateStik.load()){
             m_secondStateStik.store(false);
-            m_secondStikTimePushing.store(QDateTime::currentDateTime().toMSecsSinceEpoch());
+            m_secondStikTimePushing.store(QDateTime::currentDateTime().toMSecsSinceEpoch()+rand()%5);
             putStikcs(m_secondNumberStik.load(), true, m_number);
-            qDebug() << QString::number(m_number) << " locking";
+            //qDebug() << QString::number(m_number) << " locking";
             phylosophersGlobal::vectorOfMutex[m_number]->lock();
-            qDebug() << QString::number(m_number) << " unlocking";
+            //qDebug() << QString::number(m_number) << " unlocking
 
+            //qDebug() << QString::number(m_number) << " result is " << QString::number(m_itEating.load()) ;
+            if(!m_itEating.load()){
+                m_firstStikTimePushing.store(0);
+                putStikcs(m_firstNumberStik.load(), false, m_number);
+
+                m_secondStikTimePushing.store(0);
+                putStikcs(m_secondNumberStik.load(), false, m_number);
+            }
             return m_itEating.load();
         }
     }
@@ -112,14 +123,18 @@ void Philosopher::calculateKingStates(){
         if(( leftStickTime!= 0 && (leftStickTime <= leftPhylosoherTime  || leftPhylosoherTime == 0))
                 && ( rightStickTime!= 0 && (rightStickTime <= rightPhylosoherTime  || rightPhylosoherTime == 0))
                 && !leftPhylosopherStatus && !rightPhylosopherStatus){
-            qDebug() << QString::number(i) << " I am start";
+            //qDebug() << QString::number(i) << " I am start";
 
             phylosophersGlobal::m_vectorPhilosophers[i]->setEating(true);
         }
         // если философ закончил кушать, то его палки следует отпустить у других философов
         else if(phylosophersGlobal::m_vectorPhilosophers[i]->getEatingStatus() == EatingState::FinishEateing){
-            phylosophersGlobal::m_vectorPhilosophers[i != 0 ? i-1 : phylosophersGlobal::m_vectorPhilosophers.size()-1]->setFirstStickStatus(true);
-            phylosophersGlobal::m_vectorPhilosophers[i+1 != phylosophersGlobal::m_vectorPhilosophers.size() ? (i+1):0]->setSecondStickStatus(true);
+            if(phylosophersGlobal::m_vectorPhilosophers[i != 0 ? i-1 : phylosophersGlobal::m_vectorPhilosophers.size()-1]->getEatingStatus() != EatingState::Eateing){
+                phylosophersGlobal::m_vectorPhilosophers[i != 0 ? i-1 : phylosophersGlobal::m_vectorPhilosophers.size()-1]->setSecondStickStatus(true);
+            }
+            if(phylosophersGlobal::m_vectorPhilosophers[i+1 != phylosophersGlobal::m_vectorPhilosophers.size() ? (i+1):0]->getEatingStatus() != EatingState::Eateing){
+                phylosophersGlobal::m_vectorPhilosophers[i+1 != phylosophersGlobal::m_vectorPhilosophers.size() ? (i+1):0]->setFirstStickStatus(true);
+            }
         }
     }
     for(uint i = 0; i < phylosophersGlobal::m_vectorPhilosophers.size(); i++){
